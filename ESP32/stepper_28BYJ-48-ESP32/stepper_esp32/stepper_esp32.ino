@@ -12,6 +12,8 @@ const int stepsPerRevolution = 2048;
 // Pin 15 to IN2 on the ULN2003 driver
 // Pin 32 to IN3 on the ULN2003 driver
 // Pin 14 to IN4 on the ULN2003 driver
+// GND to GND
+// USB(5V) to VCC
 
 // Create stepper object called 'myStepper', note the pin order:
 Stepper myStepper = Stepper(stepsPerRevolution, 33, 32, 15, 14);
