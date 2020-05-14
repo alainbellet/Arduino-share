@@ -11,6 +11,8 @@
 #define motorPin2  15      // IN2 on the ULN2003 driver
 #define motorPin3  32     // IN3 on the ULN2003 driver
 #define motorPin4  14     // IN4 on the ULN2003 driver
+// GND to GND
+// USB PIN (5V) to VCC (or BAT if battery powered but might be to low voltage to run properely)
 
 // Define the AccelStepper interface type; 4 wire motor in half step mode:
 #define MotorInterfaceType 8
