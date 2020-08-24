@@ -6,6 +6,7 @@
 
 // Define number of steps per rotation:
 const int stepsPerRevolution = 2048;
+const int stepsToDo = 500;
 
 // Wiring ESP32:
 // Pin 33 to IN1 on the ULN2003 driver
@@ -28,11 +29,11 @@ void setup() {
 void loop() {
   // Step one revolution in one direction:
   Serial.println("clockwise");
-  myStepper.step(stepsPerRevolution);
+  myStepper.step(stepsToDo);
   delay(500);
   
   // Step one revolution in the other direction:
   Serial.println("counterclockwise");
-  myStepper.step(-stepsPerRevolution);
+  myStepper.step(-stepsToDo);
   delay(500);
 }
