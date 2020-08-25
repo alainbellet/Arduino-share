@@ -91,7 +91,7 @@ void loop() {
     humidity->save(sht30.humidity);
 
     // deepsleep to cool down
-    ESP.deepSleep(1 * 60 * 1e6);
+    ESP.deepSleep(5 * 60 * 1e6);
   } else {
     Serial.println("Error with DHT30 sensor");
   }
