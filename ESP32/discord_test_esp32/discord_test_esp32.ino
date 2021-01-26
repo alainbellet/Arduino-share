@@ -11,6 +11,6 @@ void setup() {
 }
 
 void loop() {
-  //sendDiscord("Hello de l'esp32! (prochain message dans 20 secondes)");
   delay(20 * 1000);
+  sendDiscord("je dis la meme chose toutes les 20 secondes");
 }
