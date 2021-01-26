@@ -34,7 +34,7 @@ AdafruitIO_Feed *temperature = io.feed("temperature-studio");
 AdafruitIO_Feed *humidity = io.feed("humidity_studio");
 
 void setup() {
- 
+
   // start the serial connection
   Serial.begin(115200);
 
@@ -81,7 +81,7 @@ void loop() {
     // save celsius to Adafruit IO
     temperature->save(celsius);
 
-
+    delay(1000);
 
     Serial.print("humidity: ");
     Serial.print(sht30.humidity);
@@ -89,6 +89,8 @@ void loop() {
 
     // save humidity to Adafruit IO
     humidity->save(sht30.humidity);
+
+    delay(3000);
 
     // deepsleep to cool down
     ESP.deepSleep(5 * 60 * 1e6);
