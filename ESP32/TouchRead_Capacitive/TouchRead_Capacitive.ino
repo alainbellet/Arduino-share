@@ -17,7 +17,7 @@ void setup()
 void loop()
 {
   //Serial.println(touchRead(T0));  // get value using T0
-  int capacitive = touchRead(T0);
+  int capacitive = touchRead(T2);
 
   if (capacitive < 70 && touch == false) {
     start_touch = millis();

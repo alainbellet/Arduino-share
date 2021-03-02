@@ -6,8 +6,8 @@
 
   In order to use this you will need:
   - an esp32 based board
-  - a discord webhook 
-  - an SSL certificate to allow https communication 
+  - a discord webhook
+  - an valid SSL certificate to allow https communication 
   - a wifi connection (2.4 GHZ)
 
   -> Enter your wifi and discord credentials in the "arduino_secrets.h" Tab
