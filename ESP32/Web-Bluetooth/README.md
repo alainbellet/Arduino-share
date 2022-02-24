@@ -1,5 +1,15 @@
 # Use Web BLE with esp32 + Chrome 
 
+## Better to use NimbleBLE Library
+
+My first test was based on ESP32BLE Library which works fine but need a lot of memory, the use of [NimbleBLE](https://github.com/h2zero/NimBLE-Arduino) is much better
+
+**ESP32BLE**
+Sketch uses 986178 bytes (**75%**) of program storage space. Maximum is 1310720 bytes.
+Global variables use 30412 bytes (9%) of dynamic memory, leaving 297268 bytes for local variables. Maximum is 327680 bytes.
+**NimbleBLE**
+Sketch uses 558850 bytes (**42%**) of program storage space. Maximum is 1310720 bytes.
+Global variables use 27044 bytes (8%) of dynamic memory, leaving 300636 bytes for local variables. Maximum is 327680 bytes.
 
 ## Usage
 
