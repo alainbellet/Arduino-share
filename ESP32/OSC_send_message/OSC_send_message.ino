@@ -15,6 +15,7 @@
 #include <ESPmDNS.h>
 #include "your_secrets.h"
 
+                                            // edit WIFI_SSID + WIFI_PASS constants in the your_secret.h tab (if not present create it)
 char ssid[] = WIFI_SSID;                    // your network SSID (name)
 char pass[] = WIFI_PASS;                    // your network password
 
