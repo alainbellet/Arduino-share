@@ -1,30 +1,25 @@
 /*---------------------------------------------------------------------------------------------
 
-  Open Sound Control (OSC) library for the ESP8266/ESP32
+  Controller for Unity 
+  Communication via OSC
 
-  Example for sending messages from the ESP8266/ESP32 to a remote computer
-  The example is sending "hello, osc." to the address "/test".
-
-  This example code is in the public domain.
+  V1 AB/ECAL 2022
 
   --------------------------------------------------------------------------------------------- */
-#if defined(ESP8266)
-#include <ESP8266WiFi.h>
-#else
+
 #include <WiFi.h>
-#endif
 #include <WiFiUdp.h>
 #include <OSCMessage.h>
 #include <OSCBundle.h>
 #include <OSCData.h>
+#include <ESPmDNS.h>
+#include "your_secrets.h"
 
-//char ssid[] = "sstudios";          // your network SSID (name)
-//char pass[] = "quickbrownhunz";                    // your network password
-char ssid[] = "asdf";          // your network SSID (name)
-char pass[] = "1loveyou";                    // your network password
+char ssid[] = WIFI_SSID;                    // your network SSID (name)
+char pass[] = WIFI_PASS;                    // your network password
 
 WiFiUDP Udp;                                // A UDP instance to let us send and receive packets over UDP
-const IPAddress outIp(192, 168, 45, 79);    //63 // remote IP of your computer
+IPAddress outIp(192, 168, 45, 63);          // remote IP of your computer
 const unsigned int outPort = 8888;          // remote port to receive OSC
 const unsigned int localPort = 9999;        // local port to listen for OSC packets (actually not used for sending)
 
@@ -43,7 +38,7 @@ unsigned int ledState = LOW;
 
 void setup() {
   Serial.begin(115200);
-  analogReadResolution(9); // 0-511
+  //analogReadResolution(9); // 0-511
   //analogSetAttenuation(ADC_0db);
 
   // initialize the pushbutton pin as an input:
@@ -72,12 +67,15 @@ void setup() {
   Serial.println("Starting UDP");
   Udp.begin(localPort);
   Serial.print("Local port: ");
-#ifdef ESP32
   Serial.println(localPort);
-#else
-  Serial.println(Udp.localPort());
-#endif
+  Serial.print("Remote IP: ");
+  Serial.println(outIp);
 
+  // Start MDNS
+  if (!MDNS.begin("esp32")) {
+    Serial.println("Error starting mDNS");
+    return;
+  }
 }
 
 void led(OSCMessage &msg) {
@@ -88,6 +86,7 @@ void led(OSCMessage &msg) {
 }
 
 void sendValues() {
+  //Serial.println(outIp);
   OSCMessage msg("/unity/state/");
   msg.add(buttonState);
   msg.add(potentiometerState);
@@ -99,40 +98,55 @@ void sendValues() {
 
 }
 
+void updateIp(OSCMessage &msg) {
+  char newIp[15];
+  int str_length = msg.getString(0, newIp, 15);
+  String ipString = String(newIp);
+  uint8_t IP_part_1 = ipString.substring(0, 3).toInt();
+  uint8_t IP_part_2 = ipString.substring(4, 7).toInt();
+  uint8_t IP_part_3 = ipString.substring(8, 10).toInt();
+  uint8_t IP_part_4 = ipString.substring(11, 13).toInt();
+
+  outIp[IP_part_1, IP_part_2, IP_part_3, IP_part_4];
+
+  Serial.print("New remote IP: ");
+  Serial.println(outIp);
+}
+
 void loop() {
   // read the state of the pushbutton value:
   buttonState = digitalRead(buttonPin);
   // read the state of the potentiometer
   potentiometerState = analogRead(potentiometerPin);
-  potentiometerState = map(potentiometerState, 0, 511, 0, 100) ;
+  //potentiometerState = map(potentiometerState, 0, 511, 0, 100) ;
 
   if (potentiometerState != potentiometerLastState) {
     sendValues();
     potentiometerLastState = potentiometerState;
     /*
-    OSCMessage msg("/unity/potentiometer/");
-    msg.add(potentiometerState);
-    Udp.beginPacket(outIp, outPort);
-    msg.send(Udp);
-    Udp.endPacket();
-    msg.empty();
+      OSCMessage msg("/unity/potentiometer/");
+      msg.add(potentiometerState);
+      Udp.beginPacket(outIp, outPort);
+      msg.send(Udp);
+      Udp.endPacket();
+      msg.empty();
 
-    Serial.println(potentiometerState);
-    delay(10);*/
+      Serial.println(potentiometerState);
+      delay(10);*/
   }
   if (buttonState != buttonLastState) {
     sendValues();
     buttonLastState = buttonState;
     /*
-    OSCMessage msg("/unity/button/");
-    msg.add(buttonState);
-    Udp.beginPacket(outIp, outPort);
-    msg.send(Udp);
-    Udp.endPacket();
-    msg.empty();
+      OSCMessage msg("/unity/button/");
+      msg.add(buttonState);
+      Udp.beginPacket(outIp, outPort);
+      msg.send(Udp);
+      Udp.endPacket();
+      msg.empty();
 
-    Serial.println(buttonState);
-    delay(10);
+      Serial.println(buttonState);
+      delay(10);
     */
   }
 
@@ -144,9 +158,9 @@ void loop() {
     while (size--) {
       msg.fill(Udp.read());
     }
-    Serial.println("msg");
     if (!msg.hasError()) {
       msg.dispatch("/arduino/led", led);
+      msg.dispatch("/arduino/updateip", updateIp);
     } else {
       error = msg.getError();
       Serial.print("error: ");
