@@ -23,7 +23,7 @@ uint8_t effect = 17;
 
 void loop() {
   sensorValue = analogRead(A0);
-  if (sensorValue % 100 == 1) {
+  //if (sensorValue % 100 == 1) {
 
     //Serial.println("which effect?");        //Prompt User for input
     //while (Serial.available() == 0) {}          // wait for user input
@@ -36,8 +36,8 @@ void loop() {
     // play the effect!
     drv.go();
     // wait a bit
-    delay(200);
-  }
+    delay(500);
+  //}
 
 
 }
