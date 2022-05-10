@@ -35,6 +35,7 @@ BLECharacteristic* pCharacteristic = NULL;
 bool deviceConnected = false;
 bool oldDeviceConnected = false;
 uint32_t value = 0;
+char textToPrint = "toto";
 
 // See the following for generating UUIDs:
 // https://www.uuidgenerator.net/
@@ -128,7 +129,7 @@ void loop() {
   if (deviceConnected) {
     int  potValue = analogRead(34); // read pot to test a variable input
     uint8_t mapValue = map(potValue, 0, 4096, 0, 254);
-    pCharacteristic->setValue((uint8_t*)&mapValue, 4);
+    pCharacteristic->setValue(&textToPrint, textToPrint.length);
     //pCharacteristic->setValue((uint8_t*)&value, 4);
     pCharacteristic->notify();
     //value++;

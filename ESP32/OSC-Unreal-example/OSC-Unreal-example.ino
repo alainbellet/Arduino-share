@@ -126,9 +126,9 @@ void inBegin(OSCMessage &msg) { // no value required
 }
 
 void inSetValue(OSCMessage &msg) { // int value 
-  int val = msg.getInt(0);
+  float val = msg.getFloat(0);
   Serial.print("/arduino/value: ");
-  Serial.println(val);
+  Serial.println(val*100);
 }
 
 

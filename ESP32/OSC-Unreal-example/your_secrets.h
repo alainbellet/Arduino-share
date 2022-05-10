@@ -1,5 +1,5 @@
-#define WIFI_SSID "ECALEVENT"
-#define WIFI_PASS "garamond"
+#define WIFI_SSID "sstudios"
+#define WIFI_PASS "quickbrownhunz"
 // autre wifi
 //#define WIFI_SSID "xx"
 //#define WIFI_PASS "xx/"

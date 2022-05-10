@@ -1,0 +1,6 @@
+{
+    "configuration": "PSRAM=disabled,PartitionScheme=default,FlashFreq=80,UploadSpeed=115200,DebugLevel=none",
+    "board": "esp32:esp32:d32_pro",
+    "port": "/dev/tty.usbserial-10",
+    "sketch": "OSC-Unreal-example.ino"
+}
