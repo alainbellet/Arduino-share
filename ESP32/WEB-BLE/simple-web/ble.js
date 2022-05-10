@@ -44,13 +44,16 @@ function subscribeToChanges(characteristic) {
 function handleData(event) {
   const enc = new TextDecoder('utf-8');
   console.log(enc.decode(event.target.value));
+  document.getElementById('output').innerHTML +=
+    enc.decode(event.target.value) + '<br>';
 }
 
 function sendData(command) {
   const enc = new TextEncoder('utf-8');
 
   if (bluetoothDevice) {
-    console.log('send');
+    console.log('message sent');
+    document.getElementById('output').innerHTML += 'message sent <br>';
     bluetoothDevice.writeValue(enc.encode(command));
   }
 }

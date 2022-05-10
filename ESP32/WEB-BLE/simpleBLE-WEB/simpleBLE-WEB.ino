@@ -114,7 +114,7 @@ void loop() {
 
   if (deviceConnected) {
     // SEND Message to WEB
-    pCharacteristic->setValue("HELLO");
+    pCharacteristic->setValue("Hello");
     pCharacteristic->notify();
     delay(1000); // bluetooth stack will go into congestion, if too many packets are sent
   }
