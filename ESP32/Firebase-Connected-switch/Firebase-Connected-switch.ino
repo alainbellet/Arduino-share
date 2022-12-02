@@ -28,7 +28,7 @@
 #include <addons/RTDBHelper.h>
 
 // .h file with wifi and firebase credentials (ignored by github)
-#include <secrets.h>
+#include "secrets.h"
 
 // Define Firebase Data object
 FirebaseData fbdo;
