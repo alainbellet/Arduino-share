@@ -18,7 +18,7 @@ int lastButtonState = 1;
 
 void setup() {
   Serial.begin(9600);
-  while (!Serial);
+  delay(500);
 
   // set Button pin to input mode
   pinMode(btnPin, INPUT_PULLUP);

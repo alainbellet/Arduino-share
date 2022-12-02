@@ -19,8 +19,8 @@
 //   - Adafruit AirLift Shield -> https://www.adafruit.com/product/4285
 //   - Adafruit AirLift FeatherWing -> https://www.adafruit.com/product/4264
 
-#define WIFI_SSID   "sstudios"
-#define WIFI_PASS   "quickbrownhunz"
+#define WIFI_SSID   "studio"
+#define WIFI_PASS   "g64HgXG3ngE7PxXaYo"
 
 // uncomment the following line if you are using airlift
 // #define USE_AIRLIFT
