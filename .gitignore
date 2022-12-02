@@ -2,3 +2,7 @@
 ESP32/discord_test_esp32/arduino_secrets.h
 .DS_Store
 ESP32/OSC_Unity_controller/your_secrets.h
+
+# ignore credential sercrets files
+secrets.h
+your_secrets.h
