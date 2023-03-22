@@ -1,0 +1,5 @@
+{
+    "sketch": "Firebase_RTDB_LED_EXAMPLE/Firebase_RTDB_LED_EXAMPLE.ino",
+    "board": "arduino:mbed_nano:nanorp2040connect",
+    "port": "/dev/tty.usbmodem31301"
+}

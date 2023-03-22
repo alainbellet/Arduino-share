@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WIFI LED TEST</title>
+  </head>
+  <body>
+    <script src="https://www.gstatic.com/firebasejs/8.2.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.0/firebase-database.js"></script>
+    <style>
+      html {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 16px;
+        color: darkgray;
+      }
+      h4 {
+        font-size: 1.2em;
+        border: 0;
+        margin: 0;
+      }
+      .red {
+        color: red;
+      }
+      .green {
+        color: green;
+      }
+      .blue {
+        color: blue;
+      }
+      select {
+        width: 200px;
+        padding: 12px 20px;
+        margin: 8px 0;
+      }
+      #container {
+        background-color: rgb(242, 242, 242);
+        height: 95vh;
+        display: block;
+        margin: 0 auto;
+        padding: 15px;
+      }
+    </style>
+    <script>
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: 'AIzaSyCu-wt8MHNWE6X4MlJIkWmZnUXKWZOOuho',
+        authDomain: 'nano-connect-test.firebaseapp.com',
+        databaseURL:
+          'https://nano-connect-test-default-rtdb.europe-west1.firebasedatabase.app',
+        projectId: 'nano-connect-test',
+        storageBucket: 'nano-connect-test.appspot.com',
+        messagingSenderId: '44561082264',
+        appId: '1:44561082264:web:3891167efc5576cc5faded',
+      };
+
+      window.onload = function () {
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        ledUpdate();
+      };
+
+      function ledUpdate() {
+        const user = document.getElementById('boards').value;
+        const red = document.getElementById('LEDR').value;
+        const green = document.getElementById('LEDG').value;
+        const blue = document.getElementById('LEDB').value;
+        const builtinled = document.getElementById('builtinled').checked
+          ? 1
+          : 0;
+
+        firebase
+          .database()
+          .ref(user)
+          .set({
+            builtinled: builtinled,
+            red: Number(red),
+            green: Number(green),
+            blue: Number(blue),
+          });
+      }
+    </script>
+
+    <div id="container">
+      <h4>BOARD</h4>
+      <select name="boards" id="boards" onchange="ledUpdate()">
+        <option value="default">default</option>
+        <option value="alain">Alain</option>
+        <option value="isaia">Isaïa</option>
+        <option value="theo">Théo</option>
+        <option value="viktor">Viktor</option>
+        <option value="odran">Odran</option>
+        <option value="emma">Emma</option>
+        <option value="sasha">Sasha</option>
+        <option value="alexandre">Alexandre</option>
+        <option value="melanie">Mélanie</option>
+        <option value="charlotte">Charlotte</option>
+        <option value="jeremie">Jérémie</option>
+        <option value="ayten">Ayten</option>
+        <option value="gary">Gary</option>
+        <option value="marius">Marius</option>
+      </select>
+      <br />
+      <br />
+      <h4>LED RGB</h4>
+      <div class="red">Red</div>
+      <input
+        onchange="ledUpdate()"
+        type="range"
+        min="0"
+        max="255"
+        value="255"
+        class="slider"
+        id="LEDR"
+      /><br />
+      <div class="green">Green</div>
+      <input
+        onchange="ledUpdate()"
+        type="range"
+        min="0"
+        max="255"
+        value="0"
+        class="slider"
+        id="LEDG"
+      /><br />
+      <div class="blue">Blue</div>
+      <input
+        onchange="ledUpdate()"
+        type="range"
+        min="0"
+        max="255"
+        value="255"
+        class="slider"
+        id="LEDB"
+      /><br />
+      <h4>LED BUILTIN</h4>
+      <input
+        onchange="ledUpdate()"
+        type="checkbox"
+        id="builtinled"
+        name="builtinled"
+        value="builtinled"
+      />
+      <label for="builtinled">Builtin Led ON/OFF</label>
+    </div>
+  </body>
+</html>

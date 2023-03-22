@@ -1,0 +1,38 @@
+@relation 'MLC'
+
+@attribute F1_MEAN_on_ACC_V numeric
+@attribute class {idle, shake}
+
+@data
+0.999023, idle
+1.01465, idle
+1.0127, idle
+1.0127, idle
+1.0127, idle
+1.01563, idle
+1.0127, idle
+1.01465, idle
+1.01563, idle
+1.01855, idle
+1.01758, idle
+1.01855, idle
+1.00684, shake
+1.02344, shake
+1.08789, shake
+1.33008, shake
+1.03906, shake
+1.04004, shake
+1.22754, shake
+0.977051, shake
+1.12012, shake
+1.4375, shake
+1.39355, shake
+1.38184, shake
+1.59961, shake
+1.59961, shake
+1.55371, shake
+1.33594, shake
+1.3877, shake
+1.62012, shake
+1.40918, shake
+0.973145, shake
