@@ -15,6 +15,10 @@
 
  * Modified A. BELLET to be used on Arduino RP2040 with a simple webpage to control it
  https://ecal-mid.ch/tangible_interface/led/
+
+ Requiert les libriaries
+ - Firebase arduino client by Mobizt
+ - WiFiNINA by Arduino
  */
 
 #include <SPI.h>
