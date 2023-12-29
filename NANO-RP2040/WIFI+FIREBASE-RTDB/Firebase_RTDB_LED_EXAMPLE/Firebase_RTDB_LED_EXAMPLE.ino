@@ -34,7 +34,7 @@
 
 /* 1. Define the WiFi credentials */
 #define WIFI_SSID "ECALEVENT"
-#define WIFI_PASSWORD ""
+#define WIFI_PASSWORD "garamond"
 
 // For the following credentials, see examples/Authentications/SignInAsUser/EmailPassword/EmailPassword.ino
 

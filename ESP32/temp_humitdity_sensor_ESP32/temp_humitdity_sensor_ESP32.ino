@@ -30,8 +30,10 @@ SHT3X sht30(0x45);
 
 
 // set up the 'temperature' and 'humidity' feeds
-AdafruitIO_Feed *temperature = io.feed("temperature-studio");
-AdafruitIO_Feed *humidity = io.feed("humidity_studio");
+AdafruitIO_Feed *temperature = io.feed("temperature-studio-outside");
+AdafruitIO_Feed *humidity = io.feed("humidity_studio-outside");
+AdafruitIO_Feed *battery = io.feed("battery_studio-outside");
+AdafruitIO_Feed *battery_voltage = io.feed("battery_voltage_studio-outside");
 
 void setup() {
 
@@ -90,12 +92,51 @@ void loop() {
     // save humidity to Adafruit IO
     humidity->save(sht30.humidity);
 
+    // check battery level
+    log_battery();
+
     delay(3000);
 
     // deepsleep to cool down
     ESP.deepSleep(5 * 60 * 1e6);
   } else {
+    
     Serial.println("Error with DHT30 sensor");
+    Serial.println("will go to sleep");
+    log_battery();
+   
+    ESP.deepSleep(5 * 60 * 1e6);
   }
 
+}
+
+
+
+uint8_t PercentageFromVoltage(float voltage) {
+  // LOLIN D32 (no voltage divider need already fitted to board.
+  // or NODEMCU ESP32 with 100K+100K voltage divider
+  uint8_t percentage;
+  percentage = 2808.3808 * pow(voltage, 4) - 43560.9157 * pow(voltage, 3) + 252848.5888 * pow(voltage, 2) - 650767.4615 * voltage + 626532.5703;
+  if (voltage > 4.19) percentage = 100;
+  else if (voltage <= 3.50) percentage = 0;
+
+  return percentage;
+}
+
+void log_battery(){
+   // check battery level
+    float voltage = analogRead(35) / 4096.0 * 7.23;
+    uint8_t percentage = PercentageFromVoltage(voltage);
+
+    Serial.print("Battery: ");
+    Serial.print(voltage);
+    Serial.println("V");
+
+    Serial.print("Battery: ");
+    Serial.print(percentage);
+    Serial.println("%");
+
+    battery->save(percentage);
+    battery_voltage->save(voltage);
+    delay(10000);
 }
