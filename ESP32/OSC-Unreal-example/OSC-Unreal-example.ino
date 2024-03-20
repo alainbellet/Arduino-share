@@ -2,7 +2,7 @@
 
   Controller for UR Engine basic example
   Communication via OSC
-
+  use lib OSC https://github.com/CNMAT/OSC
   V1 AB/ECAL 2022
 
   --------------------------------------------------------------------------------------------- */
@@ -19,7 +19,7 @@ char ssid[] = WIFI_SSID;                    // edit WIFI_SSID + WIFI_PASS consta
 char pass[] = WIFI_PASS;
 
 WiFiUDP Udp;                                // A UDP instance to let us send and receive packets over UDP
-IPAddress outIp(10, 189, 8, 81);            // remote IP of your computer
+IPAddress outIp(192, 168, 1, 14);            // remote IP of your computer
 int outPort = 8888;                         // remote port to send OSC
 const unsigned int localPort = 9999;        // local port to listen for OSC packets
 bool authorisedIP = false;
@@ -29,20 +29,20 @@ char ipAsChar[15];
 OSCErrorCode error;
 Preferences preferences; // to save persistent data (board name)
 
-String boardName = "Board_Alain"; // no space in the name
+String boardName = "Board_OSC"; // no space in the name
 
 /* ------- Define pins ann vars for button + encoder */
 // Button
-const int buttonPin = 27;
-int buttonState = 0;
-int buttonLastState = -1;
+const int buttonPin = 9;
+unsigned int buttonState = 0;
+unsigned int buttonLastState = -1;
 
 // Timing
 unsigned long lastSentMillis = 0;
-int sendDelayInMillis = 500; // delay for automatically sending values to UR (not event based)
+int sendDelayInMillis = 1000; // delay for automatically sending values to UR (not event based)
 
 // Sensor values
-int value_1 = 0;
+int32_t value_1 = 0;
 
 /* Server for IP table update */
 HTTPClient httpclient;
