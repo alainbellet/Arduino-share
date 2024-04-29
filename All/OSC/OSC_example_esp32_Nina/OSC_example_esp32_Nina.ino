@@ -276,7 +276,7 @@ void start_mdns_service() {
 #else
 void updateIpTable() {
   if (httpclient.connect("ecal-mid.ch", 443)) {
-    httpclient.print(String("GET /esp32watcher/update.php?name=") + boardName + "_" + WIFI_MODULE_TYPE + "&ip=" + WiFi.localIP().toString() + "&wifi=" + WiFi.SSID() + " HTTP/1.1\r\n" + "Host: ecal-mid.ch\r\n" + "Connection: close\r\n\r\n");
+    httpclient.print(String("GET /esp32watcher/update.php?name=") + String(boardName) + "_" + WIFI_MODULE_TYPE + "&ip=" + WiFi.localIP().toString() + "&wifi=" + WiFi.SSID() + " HTTP/1.1\r\n" + "Host: ecal-mid.ch\r\n" + "Connection: close\r\n\r\n");
   }
 }
 #endif
