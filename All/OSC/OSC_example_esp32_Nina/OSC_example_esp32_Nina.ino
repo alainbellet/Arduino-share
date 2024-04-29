@@ -14,6 +14,7 @@
 #if defined(ARDUINO_ARCH_ESP32)
 #include <WiFi.h>  // ESP32
 #include <HTTPClient.h>
+#include <ESPmDNS.h>
 #define WIFI_MODULE_TYPE "esp32"
 #else
 #include <SPI.h>
@@ -41,7 +42,7 @@ const int board_side = 1;
 
 // OSC
 OSCErrorCode error;
-String boardName = "Board_Please_Rename";  // PLEASE EDIT - no space in the name
+char boardName[30] = "Board_Please_Rename";  // PLEASE EDIT - no space in the name
 /* Server for IP table update */
 #if defined(ARDUINO_ARCH_ESP32)
 HTTPClient httpclient;
@@ -78,8 +79,10 @@ void setup() {
   startWifiAndUdp();
   // Publish to IP table (online)
   // https://ecal-mid.ch/esp32watcher
-
   updateIpTable();
+#if defined(ARDUINO_ARCH_ESP32)
+  start_mdns_service();  // start MDNS discovaribilty (zeroconf) [boardName].local
+#endif
 }
 
 void loop() {
@@ -253,9 +256,22 @@ void printOSCError(OSCErrorCode error, int type) {
 
 #if defined(ARDUINO_ARCH_ESP32)
 void updateIpTable() {
-  httpclient.begin("https://ecal-mid.ch/esp32watcher/update.php?name=" + boardName + "_" + WIFI_MODULE_TYPE + "&ip=" + WiFi.localIP().toString() + "&wifi=" + WIFI_SSID);
+  httpclient.begin("https://ecal-mid.ch/esp32watcher/update.php?name=" + String(boardName) + "_" + WIFI_MODULE_TYPE + "&ip=" + WiFi.localIP().toString() + "&wifi=" + WIFI_SSID);
   int httpResponseCode = httpclient.GET();
   httpclient.end();
+}
+
+void start_mdns_service() {
+  //initialize mDNS service
+  esp_err_t err = mdns_init();
+  if (err) {
+    Serial.println("MDNS Init failed");
+    return;
+  } else {
+    Serial.println("MDNS started: " + String(boardName)+".local");
+  }
+  //set hostname
+  mdns_hostname_set(boardName);
 }
 #else
 void updateIpTable() {
