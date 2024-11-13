@@ -34,7 +34,7 @@ const char pass[] = WIFI_PASS;
 
 // UDP
 WiFiUDP Udp;                       // A UDP instance to let us send and receive packets over UDP
-IPAddress outIp(192, 168, 1, 17);  // remote IP of your computer or other board
+IPAddress outIp(10, 189, 8, 61);  // remote IP of your computer or other board
 int outPort = 8888;                // remote port to send OSC
 int inPort = 9999;                 // local port (this board) to listen for OSC packets
 // if you have 2 boards speaking to eachother, set one side to 1 and other side 2

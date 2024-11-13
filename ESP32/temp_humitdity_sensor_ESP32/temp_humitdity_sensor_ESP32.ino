@@ -30,18 +30,22 @@ SHT3X sht30(0x45);
 
 
 // set up the 'temperature' and 'humidity' feeds
-AdafruitIO_Feed *temperature = io.feed("temperature-studio-outside");
-AdafruitIO_Feed *humidity = io.feed("humidity_studio-outside");
-AdafruitIO_Feed *battery = io.feed("battery_studio-outside");
-AdafruitIO_Feed *battery_voltage = io.feed("battery_voltage_studio-outside");
+AdafruitIO_Feed *temperature = io.feed("temperature_studio");
+AdafruitIO_Feed *humidity = io.feed("humidity_studio");
+AdafruitIO_Feed *battery = io.feed("battery_studio");
+AdafruitIO_Feed *battery_voltage = io.feed("battery_voltage_studio");
 
+// retry counter
+int retryCounter = 0;
 void setup() {
 
   // start the serial connection
   Serial.begin(115200);
 
   // wait for serial monitor to open
-  while (! Serial);
+  //while (!Serial)
+  //;
+  delay(1000);
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);
 
@@ -54,6 +58,10 @@ void setup() {
   while (io.status() < AIO_CONNECTED) {
     Serial.print(".");
     delay(500);
+    retryCounter++;
+    if (retryCounter > 20){
+      esp_restart();
+    }
   }
   digitalWrite(LED_BUILTIN, LOW);
   // we are connected
@@ -61,7 +69,6 @@ void setup() {
   Serial.println(io.statusText());
 
   delay(1000);
-
 }
 
 void loop() {
@@ -98,16 +105,18 @@ void loop() {
     delay(3000);
 
     // deepsleep to cool down
-    ESP.deepSleep(5 * 60 * 1e6);
+    esp_sleep_enable_timer_wakeup(5 * 60 * 1e6);
+    esp_deep_sleep_start();
+    //ESP.deepSleep(5 * 60 * 1e6);
   } else {
-    
+
     Serial.println("Error with DHT30 sensor");
     Serial.println("will go to sleep");
     log_battery();
-   
-    ESP.deepSleep(5 * 60 * 1e6);
+    esp_sleep_enable_timer_wakeup(5 * 60 * 1e6);
+    esp_deep_sleep_start();
+    //ESP.deepSleep(5 * 60 * 1e6);
   }
-
 }
 
 
@@ -123,20 +132,20 @@ uint8_t PercentageFromVoltage(float voltage) {
   return percentage;
 }
 
-void log_battery(){
-   // check battery level
-    float voltage = analogRead(35) / 4096.0 * 7.23;
-    uint8_t percentage = PercentageFromVoltage(voltage);
+void log_battery() {
+  // check battery level
+  float voltage = analogRead(35) / 4096.0 * 7.23;
+  uint8_t percentage = PercentageFromVoltage(voltage);
 
-    Serial.print("Battery: ");
-    Serial.print(voltage);
-    Serial.println("V");
+  Serial.print("Battery: ");
+  Serial.print(voltage);
+  Serial.println("V");
 
-    Serial.print("Battery: ");
-    Serial.print(percentage);
-    Serial.println("%");
+  Serial.print("Battery: ");
+  Serial.print(percentage);
+  Serial.println("%");
 
-    battery->save(percentage);
-    battery_voltage->save(voltage);
-    delay(10000);
+  battery->save(percentage);
+  battery_voltage->save(voltage);
+  delay(10000);
 }
