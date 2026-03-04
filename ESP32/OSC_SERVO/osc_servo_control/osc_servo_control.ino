@@ -7,34 +7,19 @@
 
   --------------------------------------------------------------------------------------------- */
 
-#include <WiFi.h>
-#include <WiFiUdp.h>
-#include <HTTPClient.h>
 #include <OSCMessage.h>
 #include <OSCBundle.h>
 #include <OSCData.h>
 #include <Preferences.h>
+// local headers
+// Local header files
+#include <wifi_udp.h>
 
 #include <ESP32Servo.h>
-
-#define WIFI_SSID "studio"
-#define WIFI_PASS "g64HgXG3ngE7PxXaYo"
-
-char ssid[] = WIFI_SSID;  // edit WIFI_SSID + WIFI_PASS constants in the your_secret.h tab (if not present create it)
-char pass[] = WIFI_PASS;
-
-WiFiUDP Udp;                          // A UDP instance to let us send and receive packets over UDP
-IPAddress outIp(192, 168, 1, 14);     // remote IP of your computer
-int outPort = 8888;                   // remote port to send OSC
-const unsigned int localPort = 9999;  // local port to listen for OSC packets
-bool authorisedIP = false;
-IPAddress lastOutIp(10, 189, 8, 81);
-char ipAsChar[15];
 
 OSCErrorCode error;
 Preferences preferences;  // to save persistent data (board name)
 
-String boardName = "Board_OSC";  // no space in the name
 
 /* ------- Define pins ann vars for button + encoder */
 // Button
@@ -46,11 +31,10 @@ unsigned int buttonLastState = -1;
 unsigned long lastSentMillis = 0;
 int sendDelayInMillis = 1000;  // delay for automatically sending values to UR (not event based)
 
+
+
 // Sensor values
 int32_t servo_pos = 0;
-
-/* Server for IP table update */
-HTTPClient httpclient;
 
 // SERVO
 Servo myservo;  // create servo object to control a servo
@@ -90,7 +74,6 @@ void setup() {
 
   // BUTTON
   // pinMode(buttonPin, INPUT_PULLUP);
-
   // Start Wifi and UDP
   startWifiAndUdp();
   // Publish to IP table (online)
@@ -102,9 +85,6 @@ void setup() {
 
 
 void loop() {
-
-  
-
   /* --------- CHECK INCOMMING OSC MSGS */
   OSCMessage msg;
   int size = Udp.parsePacket();
@@ -195,47 +175,6 @@ void inRestartESP(OSCMessage &msg) {  // no value needed
 
 /* --------- OTHER FUNCTIONS ------------ */
 
-void startWifiAndUdp() {
-  // Connect to WiFi network
-  Serial.println();
-  Serial.println();
-  Serial.print("Connecting to ");
-  Serial.println(ssid);
-  WiFi.begin(ssid, pass);
-  int tryCount = 0;
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-  Serial.println("");
-  Serial.println("WiFi connected");
-  Serial.println("IP address: ");
-  Serial.println(WiFi.localIP());
-  // Start UDP
-  Serial.println("Starting UDP");
-  if (!Udp.begin(localPort)) {
-    Serial.println("Error starting UDP");
-    return;
-  }
-  Serial.print("Local port: ");
-  Serial.println(localPort);
-  Serial.print("Remote IP: ");
-  Serial.println(outIp);
-}
-
-void updateIpTable() {
-  httpclient.begin("https://ecal-mid.ch/esp32watcher/update.php?name=" + boardName + "&ip=" + WiFi.localIP().toString() + "&wifi=" + WIFI_SSID);
-  int httpResponseCode = httpclient.GET();
-  if (httpResponseCode > 0) {
-    String payload = httpclient.getString();
-    Serial.println(payload);
-  } else {
-    Serial.print("Error code: ");
-    Serial.println(httpResponseCode);
-  }
-  // Free resources
-  httpclient.end();
-}
 
 void restartESP() {
   Serial.print("Restarting now");

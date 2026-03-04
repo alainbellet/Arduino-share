@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ESP32-C3 Web Bluetooth Button</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
+          Cantarell, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+      }
+
+      .container {
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        max-width: 500px;
+        width: 100%;
+      }
+
+      h1 {
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 28px;
+      }
+
+      .subtitle {
+        color: #666;
+        margin-bottom: 30px;
+        font-size: 14px;
+      }
+
+      .status {
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        font-weight: 500;
+        text-align: center;
+      }
+
+      .status.disconnected {
+        background: #fee;
+        color: #c33;
+      }
+
+      .status.connected {
+        background: #efe;
+        color: #3c3;
+      }
+
+      button {
+        width: 100%;
+        padding: 15px 30px;
+        font-size: 16px;
+        font-weight: 600;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 15px;
+      }
+
+      button:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      #connectBtn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+
+      #disconnectBtn {
+        background: #f44336;
+        color: white;
+      }
+
+      .button-display {
+        margin-top: 30px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+      }
+
+      .button-wrapper {
+        text-align: center;
+      }
+
+      .button-label {
+        font-size: 14px;
+        font-weight: 600;
+        color: #666;
+        margin-bottom: 10px;
+      }
+
+      .button-state {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        margin: 0 auto;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        font-weight: bold;
+        color: white;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      .button-state.pressed {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        transform: scale(1.1);
+      }
+
+      .button-state.released {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      }
+
+      .log {
+        margin-top: 20px;
+        padding: 15px;
+        background: #f5f5f5;
+        border-radius: 10px;
+        max-height: 200px;
+        overflow-y: auto;
+        font-family: 'Courier New', monospace;
+        font-size: 12px;
+      }
+
+      .log-entry {
+        padding: 5px 0;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .log-entry:last-child {
+        border-bottom: none;
+      }
+
+      .timestamp {
+        color: #999;
+        margin-right: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🎮 ESP32-C3 Button Monitor</h1>
+      <p class="subtitle">Web Bluetooth Example</p>
+
+      <div id="status" class="status disconnected">Disconnected</div>
+
+      <button id="connectBtn">Connect to ESP32-C3</button>
+      <button id="disconnectBtn" style="display: none">Disconnect</button>
+
+      <div class="button-display">
+        <div class="button-wrapper">
+          <div class="button-label">Button 1</div>
+          <div id="buttonState1" class="button-state released">Released</div>
+        </div>
+        <div class="button-wrapper">
+          <div class="button-label">Button 2</div>
+          <div id="buttonState2" class="button-state released">Released</div>
+        </div>
+        <div class="button-wrapper">
+          <div class="button-label">Button 3</div>
+          <div id="buttonState3" class="button-state released">Released</div>
+        </div>
+      </div>
+
+      <div class="log" id="log">
+        <div class="log-entry">
+          <span class="timestamp">Ready</span>
+          <span>Click "Connect" to start...</span>
+        </div>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
