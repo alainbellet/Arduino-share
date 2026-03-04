@@ -6,6 +6,7 @@
 #define BUTTON_PIN_1 0
 #define BUTTON_PIN_2 1
 #define BUTTON_PIN_3 2
+#define BLE_DEVICE_NAME "ESP32-C3-Button"
 #define SERVICE_UUID "12345678-1234-1234-1234-123456789012"
 #define CHARACTERISTIC_UUID_1 "87654321-4321-4321-4321-210987654321"
 #define CHARACTERISTIC_UUID_2 "87654321-4321-4321-4321-210987654322"
@@ -52,7 +53,7 @@ void setup()
 
   Serial.println("Starting BLE work!");
 
-  BLEDevice::init("ESP32-C3-Button");
+  BLEDevice::init(BLE_DEVICE_NAME);
   pServer = BLEDevice::createServer();
   pServer->setCallbacks(new MyServerCallbacks());
 
