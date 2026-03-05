@@ -101,7 +101,7 @@ These are included with the ESP32 Arduino core (version 3.3.7 tested).
    - Edit lines 25-27 to match your hardware:
    ```cpp
    static const uint8_t BUTTON_COUNT = 4;
-   static const uint8_t buttonPins[BUTTON_COUNT] = {25, 26, 27, 32};
+   static const uint8_t buttonPins[BUTTON_COUNT] = {0, 1, 2, 3};
    static const uint8_t buttonKeys[BUTTON_COUNT] = {'a', 'b', 'c', 'd'};
    ```
 
