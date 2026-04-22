@@ -30,7 +30,7 @@ function addLog(message) {
 
 function updateStatus(connected) {
   if (connected) {
-    statusDiv.textContent = 'Connected to ESP32-C3';
+    statusDiv.textContent = `Connected to ${bluetoothDevice ? bluetoothDevice.name : 'Device'}`;
     statusDiv.className = 'status connected';
     connectBtn.style.display = 'none';
     disconnectBtn.style.display = 'block';
@@ -65,7 +65,7 @@ async function connect() {
     addLog('Requesting Bluetooth Device...');
 
     bluetoothDevice = await navigator.bluetooth.requestDevice({
-      acceptAllDevices: true,
+      filters: [{ services: [SERVICE_UUID] }],
       optionalServices: [SERVICE_UUID],
     });
 
@@ -80,34 +80,40 @@ async function connect() {
     const service = await server.getPrimaryService(SERVICE_UUID);
 
     addLog('Getting Characteristics...');
-    characteristic1 = await service.getCharacteristic(CHARACTERISTIC_UUID_1);
-    characteristic2 = await service.getCharacteristic(CHARACTERISTIC_UUID_2);
-    characteristic3 = await service.getCharacteristic(CHARACTERISTIC_UUID_3);
+    const characteristics = await service.getCharacteristics();
+    
+    for (const characteristic of characteristics) {
+      if (characteristic.uuid === CHARACTERISTIC_UUID_1) characteristic1 = characteristic;
+      if (characteristic.uuid === CHARACTERISTIC_UUID_2) characteristic2 = characteristic;
+      if (characteristic.uuid === CHARACTERISTIC_UUID_3) characteristic3 = characteristic;
+    }
 
     addLog('Starting Notifications...');
-    await characteristic1.startNotifications();
-    await characteristic2.startNotifications();
-    await characteristic3.startNotifications();
-
-    characteristic1.addEventListener('characteristicvaluechanged', (event) =>
-      handleNotification(1, event),
-    );
-    characteristic2.addEventListener('characteristicvaluechanged', (event) =>
-      handleNotification(2, event),
-    );
-    characteristic3.addEventListener('characteristicvaluechanged', (event) =>
-      handleNotification(3, event),
-    );
+    
+    if (characteristic1) {
+      await characteristic1.startNotifications();
+      characteristic1.addEventListener('characteristicvaluechanged', (event) => handleNotification(1, event));
+      const value1 = await characteristic1.readValue();
+      handleInitialValue(1, value1);
+    }
+    
+    if (characteristic2) {
+      await characteristic2.startNotifications();
+      characteristic2.addEventListener('characteristicvaluechanged', (event) => handleNotification(2, event));
+      const value2 = await characteristic2.readValue();
+      handleInitialValue(2, value2);
+    }
+    
+    if (characteristic3) {
+      await characteristic3.startNotifications();
+      characteristic3.addEventListener('characteristicvaluechanged', (event) => handleNotification(3, event));
+      const value3 = await characteristic3.readValue();
+      handleInitialValue(3, value3);
+    }
 
     updateStatus(true);
     addLog('✓ Connected successfully!');
 
-    const value1 = await characteristic1.readValue();
-    const value2 = await characteristic2.readValue();
-    const value3 = await characteristic3.readValue();
-    updateButtonState(1, value1.getUint8(0));
-    updateButtonState(2, value2.getUint8(0));
-    updateButtonState(3, value3.getUint8(0));
   } catch (error) {
     addLog(`Error: ${error.message}`);
     console.error('Connection error:', error);
@@ -115,8 +121,31 @@ async function connect() {
 }
 
 function handleNotification(buttonNum, event) {
-  const value = event.target.value.getUint8(0);
-  updateButtonState(buttonNum, value);
+  const value = event.target.value;
+  processValue(buttonNum, value);
+}
+
+function handleInitialValue(buttonNum, value) {
+  processValue(buttonNum, value);
+}
+
+function processValue(buttonNum, value) {
+  if (!value || value.byteLength === 0) {
+    return; // Ignore empty values which happen on initial connection before the device writes to the characteristic
+  }
+
+  const decoder = new TextDecoder('utf-8');
+  const textValue = decoder.decode(value);
+  
+  // Try to determine if it's a text message or a button state
+  if (textValue.startsWith('Heartbeat') || /^[a-zA-Z0-9\s:_-]{2,}$/.test(textValue)) {
+    // If it's the Heartbeat sketch, it will send messages
+    addLog(`<span style="color: #4facfe;">📩 Message:</span> ${textValue}`);
+  } else {
+    // Otherwise handle as a legacy button press (uint8 value)
+    const uint8Value = value.getUint8(0);
+    updateButtonState(buttonNum, uint8Value);
+  }
 }
 
 async function disconnect() {
