@@ -7,8 +7,8 @@
 #include <OSCData.h>
 #include <Adafruit_NeoPixel.h>
 
-char ssid[] = "***";    // your network SSID (name)
-char pass[] = "***";  // your network password
+char ssid[] = "ECALEVENT";    // your network SSID (name)
+char pass[] = "perpetua";  // your network password
 
 // A UDP instance to let us send and receive packets over UDP
 WiFiUDP Udp;
